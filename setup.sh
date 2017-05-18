@@ -165,7 +165,11 @@ fi
 
 if [ ! -z "$MAINPAGECONTENTPATH" ]; then
 	MAINPAGECONTENTPATH="${MAINPAGECONTENTPATH/\$IP/$1}"
-	ADDITIONALPARAM="$ADDITIONALPARAM --mainpagecontentpath=$MAINPAGECONTENTPATH"
+	if [ ! -f $MAINPAGECONTENTPATH ]; then
+		ADDITIONALPARAM="$ADDITIONALPARAM --mainpagecontentpath=$MAINPAGECONTENTPATH"
+	else
+		echo "The file with the custom main page content does not exist on the given path ($MAINPAGECONTENTPATH). The default message will be used."
+	fi
 fi
 
 if [ -z "$TEMPLATEWIKINAME" ]; then

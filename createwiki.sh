@@ -47,13 +47,6 @@ elif [ "$DBTYPE" != "mysql" ] && [ "$DBTYPE" != "postgres" ]; then
 	echo "Cannot run this installer with this choice of database server ($DBTYPE)."
 fi
 
-echo "$1|$2|$3" >> "$4/dblists/tags/all.dblist"
-
-if ! grep -xq ${3} "$4/langlist"; then
-    echo "$3" >> "$4/langlist"
-    echo "Added $3 to the list of languages ($4/langlist) as it was not yet in there."
-fi
-
 if [ -z "$DBUSER" ] && [ -z "$INSTALLDBUSER" ]; then
 	echo "The database user is not set in the config file!"
 	echo "DBUSER or INSTALLDBUSER must be set to use this script."
@@ -86,6 +79,19 @@ if [ "$DBTYPE" == "postgres" ]; then
 	if [ -z "$DBSCHEMA" ]; then
 		DBSCHEMA='mediawiki'
 	fi
+fi
+
+if [ ! -z "$TEMPLATEWIKIDBNAME" ] && [ ! -f ${TEMPLATEPATH} ]; then
+	echo "The template.sql file does not exist on the given path ($TEMPLATEPATH), and TEMPLATEWIKIDBNAME is not set to a database."
+	echo "Could not start creation of the new Wiki."
+	exit 1
+fi
+
+echo "$1|$2|$3" >> "$4/dblists/tags/all.dblist"
+
+if ! grep -xq ${3} "$4/langlist"; then
+    echo "$3" >> "$4/langlist"
+    echo "Added $3 to the list of languages ($4/langlist) as it was not yet in there."
 fi
 
 if [ "$DBTYPE" == "mysql" ]; then
