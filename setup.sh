@@ -212,6 +212,11 @@ elif [ "$DBTYPE" == "postgres" ]; then
 	cp ~/.pgpass ~/.pgpass.tmp
 	head -n -1 ~/.pgpass.tmp > ~/.pgpass
 	rm -f ~/.pgpass.tmp
+
+elif [ "$DBTYPE" == "sqlite" ]; then
+	sqlite3 ${TEMPLATEWIKIDBNAME}.sqlite3 ".dump" > "$INSTALLERDIR/template.sql"
+
+	echo "Exported dump to $INSTALLERDIR/template.sql"
 else
 
 	echo "Can't create a dump for template wiki for this choice of database server ($DBTYPE) with this script. You will need to do this manually."

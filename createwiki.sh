@@ -14,7 +14,7 @@ INSTALLERDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 if [ $# -lt 4 ]; then
 	echo "Not enough arguments supplied. ($# given, 4 needed) Displaying help instead:"
 	echo "This script adds a new wiki to a Wiki family."
-	echo "This script only works with MySQL, MariaDB or PostgreSQL as database server."
+	echo "This script only works with MySQL, MariaDB, PostgreSQL or SQLite as database server."
 	echo "DO NOT run this script with direct user input! It opens up an SQL injection vulnerability!"
 	echo "Arguments:"
 	echo '$1 - Database name of the new wiki.'
@@ -43,7 +43,7 @@ source "$INSTALLERDIR/family.conf"
 # Set DBTYPE to mysql in case mariadb is used
 if [ -z "$DBTYPE" ] || [ "$DBTYPE" == "mariadb" ]; then
 	DBTYPE="mysql"
-elif [ "$DBTYPE" != "mysql" ] && [ "$DBTYPE" != "postgres" ]; then
+elif [ "$DBTYPE" != "mysql" ] && [ "$DBTYPE" != "postgres" ] && [ "$DBTYPE" != "sqlite" ]; then
 	echo "Cannot run this installer with this choice of database server ($DBTYPE)."
 fi
 
@@ -132,6 +132,20 @@ elif [ "$DBTYPE" == "postgres" ]; then
 	cp ~/.pgpass ~/.pgpass.tmp
 	head -n -1 ~/.pgpass.tmp > ~/.pgpass
 	rm -f ~/.pgpass.tmp
+elif [ "$DBTYPE" == "sqlite" ]; then
+
+	if [ ! -z "$TEMPLATEWIKIDBNAME" ]; then
+		# To import from an existing database, you'll need to export it first
+		sqlite3 ${TEMPLATEWIKIDBNAME}.sqlite3 ".dump" > "$TEMPLATEPATH"
+	fi
+
+	sqlite3 ${1}.sqlite3 < "$TEMPLATEPATH"
+
+	# Remove the exported file if it was created by this script
+	if [ ! -z "$TEMPLATEWIKIDBNAME" ]; then
+		rm "$TEMPLATEPATH"
+	fi
+
 fi
 
 # Add the wiki to the specific tag lists
