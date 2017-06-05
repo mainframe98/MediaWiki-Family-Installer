@@ -17,6 +17,13 @@ class FamilyCliInstaller extends CliInstaller {
 	private $mainPageContent;
 
 	/**
+	 * Determines if the interwiki table should be filled with default values
+	 *
+	 * @var boolean
+	 */
+	private $skipInterwikiTableInsertion;
+
+	/**
 	 * FamilyCliInstaller constructor
 	 *
 	 * @param string $siteName name of the template wiki
@@ -29,6 +36,13 @@ class FamilyCliInstaller extends CliInstaller {
 			unset( $option['mainpagecontent'] );
 		} else {
 			$this->mainPageContent = null;
+		}
+
+		if ( isset( $option['skipinterwiki'] ) ) {
+			unset( $option['skipinterwiki'] );
+			$this->skipInterwikiTableInsertion = true;
+		} else {
+			$this->skipInterwikiTableInsertion = false;
 		}
 
 		parent::__construct( $siteName, $admin, $option );
@@ -44,12 +58,16 @@ class FamilyCliInstaller extends CliInstaller {
 	protected function getInstallSteps( DatabaseInstaller $installer ) {
 		$steps = parent::getInstallSteps( $installer );
 
+		$skipSteps = [ 'sysop' ];
+		if ( $this->skipInterwikiTableInsertion ) {
+			$skipSteps[] = 'interwiki';
+		}
+
 		$newSteps = [];
 
 		foreach ( $steps as $step ) {
-			$stepName = $step['name'];
 
-			if ( $stepName == 'sysop' || $stepName == 'interwiki' ) {
+			if ( in_array( $step['name'], $skipSteps ) ) {
 				continue;
 			}
 

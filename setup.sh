@@ -53,7 +53,11 @@ fi
 CONFIGDIR="$1/config"
 
 if [ $# -gt 2 ]; then
-	CONFIGDIR="$3"
+	if [[ CONFIGDIR != /* ]]; then
+		CONFIGDIR="$1/$3"
+	else
+		CONFIGDIR="$3"
+	fi
 fi
 
 if [ ! -d "$CONFIGDIR" ]; then
@@ -62,8 +66,9 @@ fi
 
 if [[ CONFIGDIR != /* ]]; then
 	# Add the config directory to .gitignore, but only if it is in the MediaWiki installation folder
-	echo -e "\n# MediaWiki configuration folder\n/$CONFIGDIR" >> "$1/.gitignore"
-	echo "Added $CONFIGDIR to $1/.gitignore"
+	RELATIVECONFIGDIRPATH=${CONFIGDIR#$1}
+	echo -e "\n# MediaWiki configuration folder\n/$RELATIVECONFIGDIRPATH" >> "$1/.gitignore"
+	echo "Added $RELATIVECONFIGDIRPATH to $1/.gitignore"
 fi
 
 git clone https://github.com/mainframe98/MediaWiki-Family-Configuration-Example.git ${CONFIGDIR}
@@ -185,7 +190,7 @@ if [ -z "$TEMPLATEWIKIDBNAME" ]; then
 fi
 
 # Install the template first
-php $1/maintenance/familyInstaller.php "$TEMPLATEWIKINAME" --dbname=${TEMPLATEWIKIDBNAME} --dbuser="$DBUSER" --dbpass="$DBPASS" --dbserver="$DBSERVER" --installdbuser="$INSTALLDBUSER" --installdbpass="$INSTALLDBPASS" --server="$SERVER" --scriptpath="$SCRIPTPATH" --lang=${TEMPLATEWIKILANG} ${ADDITIONALPARAM}
+php $1/maintenance/familyInstaller.php "$TEMPLATEWIKINAME" --dbname=${TEMPLATEWIKIDBNAME} --dbuser="$DBUSER" --dbpass="$DBPASS" --dbserver="$DBSERVER" --installdbuser="$INSTALLDBUSER" --installdbpass="$INSTALLDBPASS" --server="$SERVER" --scriptpath="$SCRIPTPATH" --skipinterwiki --lang=${TEMPLATEWIKILANG} ${ADDITIONALPARAM}
 
 echo "Installation of $TEMPLATEWIKINAME done."
 
@@ -204,6 +209,7 @@ elif [ "$DBTYPE" == "postgres" ]; then
 	echo "$PGPASSLINE" >> ~/.pgpass
 	# Required to not have pg_dump ignore the file
 	chmod 0600 ~/.pgpass
+
 	# Actual dumping
 	pg_dump ${TEMPLATEWIKIDBNAME} --username="$DBUSER" --schema="$DBSCHEMA" --host="$DBSERVER" --port=${DBPORT} --no-password > "$INSTALLERDIR/template.sql"
 	echo "Exported dump to $INSTALLERDIR/template.sql"

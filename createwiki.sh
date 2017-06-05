@@ -116,7 +116,7 @@ elif [ "$DBTYPE" == "postgres" ]; then
 	ESCAPEDDBUSER=$(echo "$DBUSER" | tr : \: | tr \ \\)
 	ESCAPEDDBPASS=$(echo "$DBPASS" | tr : \: | tr \ \\)
 	PGPASSLINE="$ESCAPEDDBSERVER:$DBPORT:$TEMPLATEWIKIDBNAME:$ESCAPEDDBUSER:$ESCAPEDDBPASS"
- 	#Create .pgpass file first, to allow working without prompting for password
+	# Create .pgpass file first, to allow working without prompting for password
 	echo "$PGPASSLINE" >> ~/.pgpass
 	# Required to not have pg_dump ignore the file
 	chmod 0600 ~/.pgpass
@@ -132,6 +132,7 @@ elif [ "$DBTYPE" == "postgres" ]; then
 	cp ~/.pgpass ~/.pgpass.tmp
 	head -n -1 ~/.pgpass.tmp > ~/.pgpass
 	rm -f ~/.pgpass.tmp
+
 elif [ "$DBTYPE" == "sqlite" ]; then
 
 	if [ ! -z "$TEMPLATEWIKIDBNAME" ]; then

@@ -35,16 +35,11 @@ class FamilyInstaller extends Maintenance {
 		$this->addOption( 'installdbpass', 'The password for the DB user to install as.', false, true );
 		$this->addOption( 'dbuser', 'The user to use for normal operations (wikiuser)', false, true );
 		$this->addOption( 'dbpass', 'The password for the DB user for normal operations', false, true );
-		$this->addOption(
-			'dbpassfile',
-			'An alternative way to provide dbpass option, as the contents of this file',
-			false,
-			true
-		);
+		$this->addOption( 'dbpassfile', 'An alternative way to provide dbpass option, as the contents of this file', false, true );
 		$this->addOption( 'confpath', "Path to write LocalSettings.php to ($IP)", false, true );
-		$this->addOption( 'dbschema', 'The schema for the MediaWiki DB in '
-		                              . 'PostgreSQL/Microsoft SQL Server (mediawiki)', false, true );
+		$this->addOption( 'dbschema', 'The schema for the MediaWiki DB in PostgreSQL/Microsoft SQL Server (mediawiki)', false, true );
 		$this->addOption( 'mainpagecontentpath', 'Path to load custom main page content from, instead of the standard message.', false );
+		$this->addOption( 'skipinterwiki', 'Don\'t fill the InterWiki table with the default values.', false );
 		$this->addOption( 'env-checks', "Run environment checks only, don't change anything" );
 	}
 
