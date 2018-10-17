@@ -231,14 +231,14 @@ else
 fi
 
 # Move the LocalSettings file for the template wiki to a new name
-mv "$1/LocalSettings.php" "$1/LocalSettings.php.template"
+mv "$1/LocalSettings.php" "$1/LocalSettings.template.php"
 
 # Install the central wiki next
 php $1/maintenance/familyInstaller.php "$CENTRALWIKINAME" --dbname=${CENTRALWIKIDBNAME} --dbuser="$DBUSER" --dbpass="$DBPASS" --dbserver="$DBSERVER" --installdbuser="$INSTALLDBUSER" --installdbpass="$INSTALLDBPASS" --server="$SERVER" --scriptpath="$SCRIPTPATH" --lang=${CENTRALWIKILANG} ${ADDITIONALPARAM}
 echo "Installation of $CENTRALWIKINAME done."
 
 # Move the LocalSettings file for the central wiki to a new name
-mv "$1/LocalSettings.php" "$1/LocalSettings.php.central"
+mv "$1/LocalSettings.php" "$1/LocalSettings.central.php"
 
 # Link LocalSettings.php to LocalSettings.php in the config directory
 ln -s "$CONFIGDIR/LocalSettings.php" "$1/LocalSettings.php"
