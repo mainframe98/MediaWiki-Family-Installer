@@ -45,9 +45,9 @@ if [ ! hash composer 2>/dev/null ]; then
 	php composer-setup.php --install-dir=${INSTALLERDIR}
 	php -r "unlink('composer-setup.php');"
 	# Run composer
-	php ${INSTALLERDIR}/composer.phar install --working-dir="$1"
+	php ${INSTALLERDIR}/composer.phar install --no-dev --working-dir="$1"
 else
-	composer install --working-dir="$1"
+	composer install --no-dev --working-dir="$1"
 fi
 
 CONFIGDIR="$1/config"
