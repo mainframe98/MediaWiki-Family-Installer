@@ -170,7 +170,7 @@ fi
 
 if [ ! -z "$MAINPAGECONTENTPATH" ]; then
 	MAINPAGECONTENTPATH="${MAINPAGECONTENTPATH/\$IP/$1}"
-	if [ ! -f $MAINPAGECONTENTPATH ]; then
+	if [ -f $MAINPAGECONTENTPATH ]; then
 		ADDITIONALPARAM="$ADDITIONALPARAM --mainpagecontentpath=$MAINPAGECONTENTPATH"
 	else
 		echo "The file with the custom main page content does not exist on the given path ($MAINPAGECONTENTPATH). The default message will be used."
